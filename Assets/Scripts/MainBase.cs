@@ -32,12 +32,6 @@ public class MainBase : MonoBehaviour
         _storage = GetComponent<Storage>();
     }
 
-    public void AddItem(Item item)
-    {
-        item.SetDetectState(true);
-        _findItems.Add(item);
-    }
-
     private void Update()
     {
         if (_npcs.Count > 0 && _findItems.Count > 0)
@@ -49,6 +43,12 @@ public class MainBase : MonoBehaviour
                 _npcs.Remove(_npcs[_npcs.Count - 1]);
             }
         }
+    }
+
+    public void AddItem(Item item)
+    {
+        item.SetDetectState(true);
+        _findItems.Add(item);
     }
 
     private void SpawnUnits()

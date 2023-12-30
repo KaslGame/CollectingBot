@@ -11,6 +11,7 @@ public class Scanner : MonoBehaviour
 
     private SphereCollider _sphereCollider;
     private MainBase _mainBase;
+
     private bool _isTimerStart;
 
     private void Awake()
@@ -18,6 +19,13 @@ public class Scanner : MonoBehaviour
         _sphereCollider = GetComponent<SphereCollider>();
         _mainBase = GetComponent<MainBase>();
         _sphereCollider.enabled = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent(out Item item))
+            if (!_mainBase.FindItems.Contains(item) && item.Detected == false)
+                _mainBase.AddItem(item);
     }
 
     public void Scan()
@@ -33,12 +41,5 @@ public class Scanner : MonoBehaviour
         yield return new WaitForSeconds(time);
         _sphereCollider.enabled = false;
         _isTimerStart = false;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.TryGetComponent(out Item item))
-            if (!_mainBase.FindItems.Contains(item) && item.Detected == false)
-                _mainBase.AddItem(item);
     }
 }

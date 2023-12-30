@@ -7,12 +7,30 @@ public class NPC : MonoBehaviour
     [SerializeField] private Transform _pocketPosition;
     [SerializeField] private float _speed;
 
-    public bool Busy => _busy;
-
     private Transform _basePosition;
     private Vector3 _targetPosition;
     private Item _selectItem;
     private bool _busy = false;
+
+    public bool Busy => _busy;
+
+    private void Update()
+    {
+        if (_busy && _targetPosition != null)
+            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, _speed * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.TryGetComponent(out Item item) && _busy)
+        {
+            if (item == _selectItem)
+            {
+                item.Take(_pocketPosition);
+                _targetPosition = _basePosition.transform.position;
+            }
+        }
+    }
 
     public void SetTask(Item item, Transform basePosition)
     {
@@ -33,23 +51,5 @@ public class NPC : MonoBehaviour
         _targetPosition = transform.position;
         transform.position = _basePosition.position;
         _selectItem.Place(storage);
-    }
-
-    private void Update()
-    {
-        if (_busy && _targetPosition != null)
-            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, _speed * Time.deltaTime);
-    }
-
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.gameObject.TryGetComponent(out Item item) && _busy)
-        {
-            if (item == _selectItem)
-            {
-                item.Take(_pocketPosition);
-                _targetPosition = _basePosition.transform.position;
-            }    
-        }
     }
 }
